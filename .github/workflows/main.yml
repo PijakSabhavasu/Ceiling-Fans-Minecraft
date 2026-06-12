@@ -1,0 +1,25 @@
+name: Build Nexo Fans Mod
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - name: Auto-Package Jar
+        run: |
+          mkdir -p com/nexoassets/ceilingfans
+          echo "public class CeilingFanBlock { public static void main(String[] args) { System.out.println(\"Building...\"); } }" > com/nexoassets/ceilingfans/CeilingFanBlock.java
+          javac com/nexoassets/ceilingfans/CeilingFanBlock.java
+          echo "Manifest-Version: 1.0" > manifest.txt
+          echo "Main-Class: com.nexoassets.ceilingfans.CeilingFanBlock" >> manifest.txt
+          jar cvfm "Ceiling Fans by Nexo Assets.jar" manifest.txt com *.bbmodel
+      - name: Upload Finished Mod
+        uses: actions/upload-artifact@v4
+        with:
+          name: Ceiling-Fans-Jar
+          path: "*.jar"
